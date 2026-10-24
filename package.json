@@ -1,7 +1,7 @@
 {
   "name": "hyperborea",
   "productName": "HYPERBOREA",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "HYPERBOREA DATABASE — приложение для ПК",
   "main": "main.js",
   "private": true,

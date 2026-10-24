@@ -196,6 +196,7 @@ function setupUpdates() {
   };
   autoUpdater.logger = {info: write('info'), warn: write('warn'), error: write('error'), debug: () => {}};
   autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.disableWebInstaller = true;
   // Без интернета проверка просто не удастся — приложение работает дальше как обычно.
   autoUpdater.on('error', () => {});
 

@@ -1,5 +1,5 @@
 // Копирует свежие файлы сайта в папку site/, которая попадает внутрь приложения.
-import {cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {cpSync, existsSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 
@@ -26,6 +26,4 @@ if (index.includes(googleFont)) {
   console.warn('Внимание: на сайте изменилось подключение шрифтов, проверьте их без интернета.');
 }
 
-mkdirSync(path.join(root, 'build'), {recursive: true});
-cpSync(path.join(source, 'icons/icon-512.png'), path.join(root, 'build/icon.png'));
 console.log(`Сайт скопирован: ${source} → ${target}`);

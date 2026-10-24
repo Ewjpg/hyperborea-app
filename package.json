@@ -23,6 +23,7 @@
     },
     "files": [
       "main.js",
+      "assets/app-icon.png",
       "package.json"
     ],
     "extraResources": [
@@ -32,7 +33,7 @@
       }
     ],
     "win": {
-      "icon": "build/icon.png"
+      "icon": "assets/app-icon.png"
     },
     "nsis": {
       "oneClick": false,

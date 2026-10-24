@@ -145,7 +145,7 @@ function createWindow() {
     minHeight: 560,
     title: 'HYPERBOREA',
     backgroundColor: '#000000',
-    icon: path.join(siteRoot(), 'icons/icon-512.png'),
+    icon: path.join(__dirname, 'assets/app-icon.png'),
     autoHideMenuBar: true,
     show: false,
     webPreferences: {contextIsolation: true, sandbox: true},

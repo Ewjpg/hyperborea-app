@@ -43,15 +43,6 @@ attach_devtools() {
 }
 finish() {
   adb logcat -d > "$OUT/logcat.txt" 2>/dev/null || true
-  # Уменьшенные снимки одной картинкой прямо в журнал — чтобы посмотреть их, не скачивая Artifacts.
-  local shots=()
-  for name in 01-start 03-database 04-players 06-installer 99-failure; do
-    [ -s "$OUT/$name.png" ] && shots+=("$OUT/$name.png")
-  done
-  if [ ${#shots[@]} -gt 0 ] && command -v convert > /dev/null; then
-    convert "${shots[@]}" -resize 180x +append -quality 50 "$OUT/montage.jpg" \
-      && echo "MONTAGE ${shots[*]##*/} $(base64 -w0 "$OUT/montage.jpg")"
-  fi
   echo
   echo "=== Журнал приложения (последние строки)"
   grep -E 'HYPERBOREA|AndroidRuntime' "$OUT/logcat.txt" | tail -40 || true

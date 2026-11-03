@@ -182,6 +182,20 @@ jobs:
           disable-animations: true
           script: bash android/ci/smoke-test.sh test-apks screenshots
 
+      # Уменьшенные снимки одной картинкой прямо в журнал — чтобы посмотреть их, не скачивая Artifacts.
+      - name: Снимки экрана в журнал
+        if: always()
+        run: |
+          shots=()
+          for name in 01-start 03-database 04-players 06-installer 99-failure; do
+            if [ -s "screenshots/$name.png" ]; then shots+=("screenshots/$name.png"); fi
+          done
+          [ ${#shots[@]} -gt 0 ] || exit 0
+          command -v convert > /dev/null || sudo apt-get install -y -qq imagemagick > /dev/null
+          convert "${shots[@]}" -resize 160x +append -quality 45 screenshots/montage.jpg
+          echo "${shots[*]}"
+          echo "MONTAGE $(base64 -w0 screenshots/montage.jpg)"
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:

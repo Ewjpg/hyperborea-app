@@ -111,45 +111,48 @@ final class SiteServer {
         String type = mime(name);
         if (name.endsWith(".html")) return html(name, type);
 
-        // Размер известен для несжатых файлов (музыка, картинки, видео) — для них работает перемотка.
-        long size = -1;
-        try (AssetFileDescriptor descriptor = assets.openFd(name)) {
-            size = descriptor.getLength();
-        } catch (IOException compressedOrMissing) {
-            // Сжатый файл (скрипты, стили) отдаём целиком.
-        }
         InputStream stream;
         try {
             stream = assets.open(name);
         } catch (IOException missing) {
             return respond(404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8), null);
         }
-
         Map<String, String> headers = new HashMap<>();
-        headers.put("Accept-Ranges", size >= 0 ? "bytes" : "none");
+        headers.put("Accept-Ranges", "bytes");
         Matcher range = RANGE.matcher(header(requestHeaders, "Range"));
-        if (size >= 0 && range.matches() && !(range.group(1).isEmpty() && range.group(2).isEmpty())) {
-            long start;
-            long end;
-            if (range.group(1).isEmpty()) {
-                start = Math.max(size - Long.parseLong(range.group(2)), 0);
-                end = size - 1;
-            } else {
-                start = Long.parseLong(range.group(1));
-                end = range.group(2).isEmpty() ? size - 1 : Math.min(Long.parseLong(range.group(2)), size - 1);
-            }
-            if (start > end || start >= size) {
-                stream.close();
-                headers.put("Content-Range", "bytes */" + size);
-                return respond(416, type, new byte[0], headers);
-            }
-            skip(stream, start);
-            headers.put("Content-Range", "bytes " + start + "-" + end + "/" + size);
-            headers.put("Content-Length", String.valueOf(end - start + 1));
-            return respond(206, type, new Limited(stream, end - start + 1), headers);
+        if (!range.matches() || (range.group(1).isEmpty() && range.group(2).isEmpty())) {
+            return respond(200, type, stream, headers);
         }
-        if (size >= 0) headers.put("Content-Length", String.valueOf(size));
-        return respond(200, type, stream, headers);
+
+        // Частичная загрузка нужна, чтобы можно было перематывать музыку и видео.
+        // Размер известен сразу для несжатых файлов (музыка, картинки, видео); сжатый файл читаем целиком.
+        long size;
+        try (AssetFileDescriptor descriptor = assets.openFd(name)) {
+            size = descriptor.getLength();
+        } catch (IOException compressed) {
+            byte[] data = read(stream);
+            stream.close();
+            stream = new ByteArrayInputStream(data);
+            size = data.length;
+        }
+        long start;
+        long end;
+        if (range.group(1).isEmpty()) {
+            start = Math.max(size - Long.parseLong(range.group(2)), 0);
+            end = size - 1;
+        } else {
+            start = Long.parseLong(range.group(1));
+            end = range.group(2).isEmpty() ? size - 1 : Math.min(Long.parseLong(range.group(2)), size - 1);
+        }
+        if (start > end || start >= size) {
+            stream.close();
+            headers.put("Content-Range", "bytes */" + size);
+            return respond(416, type, new byte[0], headers);
+        }
+        // До начала куска WebView промотает поток сам (он сверяет Range с stream.available()),
+        // поэтому поток отдаётся с самого начала и только обрезается после конца куска.
+        headers.put("Content-Range", "bytes " + start + "-" + end + "/" + size);
+        return respond(206, type, new Limited(stream, end + 1), headers);
     }
 
     /** Страница сайта с подключённым первым скриптом приложения. */
@@ -176,8 +179,6 @@ final class SiteServer {
     }
 
     private static WebResourceResponse respond(int status, String type, byte[] body, Map<String, String> headers) {
-        if (headers == null) headers = new HashMap<>();
-        headers.put("Content-Length", String.valueOf(body.length));
         return respond(status, type, new ByteArrayInputStream(body), headers);
     }
 
@@ -227,17 +228,6 @@ final class SiteServer {
         byte[] buffer = new byte[16384];
         for (int count; (count = stream.read(buffer)) != -1; ) out.write(buffer, 0, count);
         return out.toByteArray();
-    }
-
-    private static void skip(InputStream stream, long count) throws IOException {
-        while (count > 0) {
-            long skipped = stream.skip(count);
-            if (skipped <= 0) {
-                if (stream.read() == -1) return;
-                skipped = 1;
-            }
-            count -= skipped;
-        }
     }
 
     /** Отдаёт не больше заданного числа байт — для частичной загрузки музыки и видео. */

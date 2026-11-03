@@ -49,7 +49,22 @@ const CHECKS = [
   ['файл сайта', `fetch('./manifest.webmanifest').then(response => response.status + ' ' + response.headers.get('content-type'))`, value => value.startsWith('200 application/manifest+json')],
   ['нет такого файла → 404', `fetch('./no-such-file.js').then(response => response.status)`, value => value === 404],
   ['модуль three.js', `import('./vendor/three.module.min.js').then(module => typeof module.WebGLRenderer)`, value => value === 'function'],
-  ['перемотка музыки (Range)', `fetch('./assets/mi-bombo.mp3', {headers: {Range: 'bytes=100-199'}}).then(async response => [response.status, response.headers.get('content-range'), (await response.arrayBuffer()).byteLength].join(' '))`, value => /^206 bytes 100-199\/\d+ 100$/.test(value)],
+  ['кусок файла (Range 100-199)', `fetch('./assets/mi-bombo.mp3', {headers: {Range: 'bytes=100-199'}}).then(async response => [response.status, response.headers.get('content-range'), (await response.arrayBuffer()).byteLength].join(' '))`, value => /^206 bytes 100-199\/\d+ 100$/.test(value)],
+  ['кусок файла (Range 1000-)', `fetch('./assets/mi-bombo.mp3', {headers: {Range: 'bytes=1000-'}}).then(async response => [response.status, response.headers.get('content-range'), (await response.arrayBuffer()).byteLength].join(' '))`, value => {
+    const match = /^206 bytes 1000-(\d+)\/(\d+) (\d+)$/.exec(value);
+    return Boolean(match) && Number(match[1]) === Number(match[2]) - 1 && Number(match[3]) === Number(match[2]) - 1000;
+  }],
+  ['перемотка музыки в <audio>', `new Promise(resolve => {
+    const audio = new Audio('./assets/mi-bombo.mp3');
+    audio.muted = true;
+    const timer = setTimeout(() => resolve('timeout, readyState ' + audio.readyState), 20000);
+    audio.addEventListener('error', () => { clearTimeout(timer); resolve('error ' + audio.error?.code); });
+    audio.addEventListener('loadedmetadata', () => {
+      audio.addEventListener('seeked', () => { clearTimeout(timer); resolve('seeked ' + Math.round(audio.currentTime) + '/' + Math.round(audio.duration)); }, {once: true});
+      audio.currentTime = Math.min(audio.duration / 2, 30);
+    }, {once: true});
+    audio.load();
+  })`, value => /^seeked [1-9]\d*\/\d+$/.test(value)],
   ['шрифт Press Start 2P', `document.fonts.load('16px "Press Start 2P"').then(() => document.fonts.check('16px "Press Start 2P"'))`, value => value === true],
   ['есть связь', `navigator.onLine`, value => value === true],
   ['сервер: получить форму (GET)', `fetch('/api/fear/form', {cache: 'no-store'}).then(async response => response.status + ' ' + Object.keys(await response.json()).join(','))`, value => /^200 .*token/.test(value)],

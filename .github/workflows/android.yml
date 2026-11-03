@@ -177,6 +177,7 @@ jobs:
           api-level: 35
           target: google_apis
           arch: x86_64
+          profile: pixel_6
           emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
           disable-animations: true
           script: bash android/ci/smoke-test.sh test-apks screenshots

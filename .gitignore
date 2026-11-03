@@ -4,3 +4,10 @@ site/
 build/
 release-test/
 previews/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.p12
+*.jks

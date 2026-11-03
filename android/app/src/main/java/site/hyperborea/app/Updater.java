@@ -21,6 +21,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,10 +32,11 @@ import java.util.regex.Pattern;
 /**
  * Обновления. Приложение смотрит файл latest-android.json в последнем выпуске на GitHub
  * (github.com/Ewjpg/hyperborea-app/releases) и, если там версия новее, предлагает скачать и установить её.
- * Проверка — при запуске и потом раз в 2 часа, пока приложение открыто.
+ * Проверка — при запуске и потом раз в 2 часа, пока приложение открыто (если не было связи — через 10 минут).
  */
 final class Updater {
     private static final long INTERVAL = 2 * 60 * 60 * 1000L;
+    private static final long RETRY = 10 * 60 * 1000L;
     private static final String APK = "application/vnd.android.package-archive";
     private static final Pattern APK_NAME = Pattern.compile("^HYPERBOREA-(\\d+\\.\\d+\\.\\d+)\\.apk$");
 
@@ -43,7 +45,7 @@ final class Updater {
     private final Runnable check = this::checkNow;
     private boolean resumed;
     private boolean asked;
-    private long lastCheck;
+    private long nextCheck; // SystemClock.elapsedRealtime(); 0 — проверить сразу
     private long download = -1;
     private Uri readyToInstall;
     private BroadcastReceiver receiver;
@@ -60,9 +62,7 @@ final class Updater {
             readyToInstall = null;
             install(file);
         }
-        long wait = lastCheck == 0 ? 0 : Math.max(0, lastCheck + INTERVAL - SystemClock.elapsedRealtime());
-        main.removeCallbacks(check);
-        main.postDelayed(check, wait);
+        schedule();
     }
 
     void onPause() {
@@ -81,9 +81,14 @@ final class Updater {
         }
     }
 
+    private void schedule() {
+        main.removeCallbacks(check);
+        if (resumed) main.postDelayed(check, Math.max(0, nextCheck - SystemClock.elapsedRealtime()));
+    }
+
     private void checkNow() {
-        lastCheck = SystemClock.elapsedRealtime();
-        main.postDelayed(check, INTERVAL);
+        nextCheck = SystemClock.elapsedRealtime() + INTERVAL;
+        schedule();
         if (asked) return;
         new Thread(() -> {
             try {
@@ -92,8 +97,14 @@ final class Updater {
                 if (compare(version, BuildConfig.VERSION_NAME) <= 0) return;
                 String url = latest.getString("url");
                 main.post(() -> offer(version, url));
-            } catch (Exception e) {
+            } catch (IOException e) {
                 // Без интернета проверка просто не удастся — приложение работает дальше как обычно.
+                Log.i(MainActivity.TAG, "Нет связи для проверки обновлений: " + e);
+                main.post(() -> {
+                    nextCheck = Math.min(nextCheck, SystemClock.elapsedRealtime() + RETRY);
+                    schedule();
+                });
+            } catch (Exception e) {
                 Log.i(MainActivity.TAG, "Проверка обновлений не удалась: " + e);
             }
         }, "updates").start();

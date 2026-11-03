@@ -33,13 +33,26 @@ wait_for() { # wait_for <секунды> '<условие>'
   done
   return 1
 }
-tap_id() { # нажать на кнопку по её resource-id
+tap_in() { # tap_in "<снимок экрана>" <resource-id> — нажать на кнопку
   local bounds
-  bounds=$(ui | grep -o "resource-id=\"$1\"[^>]*bounds=\"[^\"]*\"" | grep -o 'bounds="[^"]*"' | head -1 || true)
+  bounds=$(grep -o "resource-id=\"$2\"[^>]*bounds=\"[^\"]*\"" <<< "$1" | grep -o 'bounds="[^"]*"' | head -1 || true)
   [ -n "$bounds" ] || return 1
-  read -r x1 y1 x2 y2 <<< "$(echo "$bounds" | grep -o '[0-9]\+' | tr '\n' ' ')"
+  read -r x1 y1 x2 y2 <<< "$(grep -o '[0-9]\+' <<< "$bounds" | tr '\n' ' ')"
   adb shell input tap $(((x1 + x2) / 2)) $(((y1 + y2) / 2))
 }
+# Что на экране (XML). На медленном эмуляторе иногда всплывает системное окно «… isn't responding»
+# у других приложений (например, у рабочего стола) и закрывает собой всё — его закрываем кнопкой «Wait».
+screen() {
+  local xml
+  xml=$(ui)
+  if tap_in "$xml" "android:id/aerr_wait"; then
+    echo "(закрыто системное окно «не отвечает»)" >&2
+    sleep 2
+    xml=$(ui)
+  fi
+  printf '%s' "$xml"
+}
+tap_id() { tap_in "$(screen)" "$1"; }
 attach_devtools() {
   wait_for 60 '[ -n "$(devtools)" ]' || fail "WebView не запустился"
   adb forward --remove-all
@@ -68,14 +81,14 @@ sleep 3
 shot 01-start
 
 step "Предложение обновиться"
-if ! wait_for 40 'grep -q "99.0.0" <<< "$(ui)"'; then
+if ! wait_for 40 'grep -q "99.0.0" <<< "$(screen)"'; then
   # Сразу после запуска эмулятора сеть бывает ещё не готова, а следующая проверка в приложении — через 10 минут.
   echo "Окна нет. Журнал приложения: $(adb logcat -d -s HYPERBOREA:I | tail -5)"
   echo "Перезапускаю приложение и пробую ещё раз."
   adb shell am force-stop "$PKG"
   adb shell am start -W -n "$PKG/.MainActivity"
   attach_devtools
-  wait_for 40 'grep -q "99.0.0" <<< "$(ui)"' || fail "Не появилось предложение обновиться"
+  wait_for 40 'grep -q "99.0.0" <<< "$(screen)"' || fail "Не появилось предложение обновиться"
 fi
 shot 02-update-offer
 tap_id "android:id/button2" || fail "Нет кнопки «Позже»"
@@ -91,10 +104,12 @@ shot 03-database
 page open-players || fail "Не открылся раздел PLAYERS"
 sleep 2
 shot 04-players
+screen > /dev/null
 adb shell input keyevent KEYCODE_BACK
 wait_for 10 'grep -q "/ DATABASE" <<< "$(page where)"' || fail "«Назад» не вернул из раздела PLAYERS в базу: $(page where)"
 echo "«Назад» вернул в базу: $(page where)"
 shot 05-after-back
+screen > /dev/null
 adb shell input keyevent KEYCODE_BACK
 wait_for 10 '! grep -q "$PKG" <<< "$(resumed)"' || fail "«Назад» на главном экране базы не свернул приложение"
 echo "«Назад» на главном экране свернул приложение: $(resumed)"
@@ -109,7 +124,7 @@ step "Обновление до 99.0.0"
 adb shell appops set "$PKG" REQUEST_INSTALL_PACKAGES allow
 adb shell am force-stop "$PKG"
 adb shell am start -W -n "$PKG/.MainActivity"
-wait_for 40 'grep -q "99.0.0" <<< "$(ui)"' || fail "После перезапуска не появилось предложение обновиться"
+wait_for 40 'grep -q "99.0.0" <<< "$(screen)"' || fail "После перезапуска не появилось предложение обновиться"
 tap_id "android:id/button1" || fail "Нет кнопки «Обновить»"
 wait_for 120 'grep -qi packageinstaller <<< "$(resumed)"' || fail "Не открылась установка обновления: $(resumed)"
 sleep 3

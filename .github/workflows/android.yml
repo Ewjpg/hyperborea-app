@@ -187,7 +187,7 @@ jobs:
         if: always()
         run: |
           shots=()
-          for name in 01-start 03-database 04-players 06-installer 99-failure; do
+          for name in 02-update-offer 03-database 04-players 06-installer 99-failure; do
             if [ -s "screenshots/$name.png" ]; then shots+=("screenshots/$name.png"); fi
           done
           [ ${#shots[@]} -gt 0 ] || exit 0

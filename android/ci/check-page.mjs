@@ -2,9 +2,14 @@
 // Запускает android/ci/smoke-test.sh на GitHub. Перед запуском: adb forward tcp:9222 localabstract:webview_devtools_remote_<pid>
 // node check-page.mjs ready | checks | enter | open-players | where
 const PAGE = 'https://appassets.androidplatform.net/';
+// Если WebView перестал отвечать, не ждём бесконечно.
+setTimeout(() => {
+  console.log('Страница не отвечает');
+  process.exit(2);
+}, 100000).unref();
 
 async function connect() {
-  const targets = await (await fetch('http://127.0.0.1:9222/json')).json();
+  const targets = await (await fetch('http://127.0.0.1:9222/json', {signal: AbortSignal.timeout(10000)})).json();
   const target = targets.find(item => item.type === 'page' && item.url.startsWith(PAGE));
   if (!target) throw new Error('Нет страницы приложения среди ' + JSON.stringify(targets.map(item => item.url)));
   const socket = new WebSocket(`ws://127.0.0.1:9222/devtools/page/${target.id}`);

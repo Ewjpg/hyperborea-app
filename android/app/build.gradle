@@ -1,0 +1,84 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'com.android.application'
+}
+
+// Файлы сайта. По умолчанию — папка site/ в корне проекта (её заполняет «npm run copy-site»).
+// GitHub при сборке берёт сайт из установщика для Windows и передаёт сюда -PsiteDir=...
+def siteDir = file(findProperty('siteDir') ?: "$rootDir/../site")
+
+// Версия та же, что у приложения для ПК (package.json), если не передана -PappVersion=...
+def appVersion = (findProperty('appVersion') ?: new JsonSlurper().parse(file("$rootDir/../package.json")).version).toString()
+def versionParts = (appVersion =~ /^(\d+)\.(\d+)\.(\d+)$/)
+if (!versionParts.matches()) throw new GradleException("Версия должна быть вида 1.2.3, а не «$appVersion»")
+// 1.2.3 → 1002003: номер сборки для Android должен расти с каждой версией.
+def appVersionCode = versionParts.group(1).toInteger() * 1000000 + versionParts.group(2).toInteger() * 1000 + versionParts.group(3).toInteger()
+
+// Откуда приложение узнаёт о новых версиях.
+def updateFeed = (findProperty('updateFeed') ?: 'https://github.com/Ewjpg/hyperborea-app/releases/latest/download/latest-android.json').toString()
+
+// Ключ подписи. Обновление ставится поверх старой версии, только если обе подписаны одним и тем же ключом.
+def keystore = System.getenv('HYPERBOREA_KEYSTORE')
+
+android {
+    namespace 'site.hyperborea.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'site.hyperborea.app'
+        minSdk 24
+        targetSdk 35
+        versionCode appVersionCode
+        versionName appVersion
+        buildConfigField 'String', 'UPDATE_FEED', "\"$updateFeed\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    signingConfigs {
+        release {
+            if (keystore) {
+                storeFile file(keystore)
+                storeType 'pkcs12'
+                storePassword System.getenv('HYPERBOREA_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('HYPERBOREA_KEY_ALIAS') ?: 'hyperborea'
+                keyPassword System.getenv('HYPERBOREA_KEYSTORE_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Без ключа получится пробная сборка с отладочной подписью: поставить её можно, обновить — нет.
+            signingConfig keystore ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = [siteDir]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    lint {
+        checkReleaseBuilds false
+    }
+}
+
+tasks.named('preBuild').configure {
+    doFirst {
+        if (!new File(siteDir, 'index.html').isFile()) {
+            throw new GradleException("Не найден сайт в $siteDir. Сначала выполните «npm run copy-site» или передайте -PsiteDir=...")
+        }
+        if (!keystore) logger.warn('Ключ подписи не задан (HYPERBOREA_KEYSTORE) — сборка будет только для проверки.')
+    }
+}

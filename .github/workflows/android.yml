@@ -1,0 +1,191 @@
+name: Android
+
+# Приложение для Android (APK) собирает GitHub — Android Studio на компьютере для этого не нужна.
+#  • «npm run release» запускает эту сборку для нового выпуска: сайт берётся из установщика для Windows
+#    в этом же выпуске, APK подписывается ключом из секретов репозитория (npm run android-key),
+#    а HYPERBOREA-<версия>.apk и latest-android.json (по нему приложения узнают о новой версии) кладутся туда же.
+#  • При изменениях в папке android/ сборка проверяется на эмуляторе Android с сайтом из последнего выпуска
+#    (android/ci/smoke-test.sh). Снимки экрана и APK лежат в «Artifacts» на странице запуска.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Выпуск, например v1.2.0'
+        required: true
+  push:
+    paths:
+      - 'android/**'
+      - '.github/workflows/android.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      IS_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
+      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Выпуск и версия
+        env:
+          TAG_INPUT: ${{ inputs.tag }}
+        run: |
+          if [ "$IS_RELEASE" = true ]; then
+            tag="$TAG_INPUT"
+            version="${tag#v}"
+          else
+            tag=$(gh release view --json tagName --jq .tagName)
+            version=$(node -p "require('./package.json').version")
+          fi
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Версия должна быть вида 1.2.3, а не «$version»"
+            exit 1
+          fi
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "Сайт из выпуска $tag, версия приложения $version"
+
+      - name: Сайт из установщика для Windows
+        run: |
+          mkdir -p work
+          gh release download "$TAG" --pattern 'HYPERBOREA-Setup-*.exe' --dir work
+          installer=$(ls work/HYPERBOREA-Setup-*.exe | head -1)
+          7z x -y -owork/nsis "$installer" > /dev/null || true
+          archive=$(find work/nsis -name 'app-*.7z' | head -1)
+          if [ -z "$archive" ]; then
+            # Запасной путь: архив приложения лежит внутри установщика как есть.
+            python3 -c "import sys; d = open(sys.argv[1], 'rb').read(); i = d.find(b'7z\xbc\xaf\x27\x1c'); assert i >= 0, 'В установщике нет архива приложения'; open(sys.argv[2], 'wb').write(d[i:])" "$installer" work/app.7z
+            archive=work/app.7z
+          fi
+          7z x -y -owork/app "$archive" > /dev/null
+          test -f work/app/resources/site/index.html
+          echo "SITE=$PWD/work/app/resources/site" >> "$GITHUB_ENV"
+          du -sh work/app/resources/site
+
+      - name: Ключ подписи
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          key="$RUNNER_TEMP/hyperborea-android.p12"
+          if [ "$HAS_KEY" = true ]; then
+            printf %s "$KEYSTORE_BASE64" | tr -d '\r\n ' | base64 -d > "$key"
+            password=$(printf %s "$KEYSTORE_PASSWORD" | tr -d '\r\n')
+          elif [ "$IS_RELEASE" = true ]; then
+            echo "::error::В секретах репозитория нет ключа подписи Android. Запустите на компьютере: npm run android-key"
+            exit 1
+          else
+            # Проверочная сборка: одноразовый ключ того же вида, что создаёт «npm run android-key».
+            mkdir -p "$RUNNER_TEMP/key"
+            cp scripts/android-key.mjs "$RUNNER_TEMP/key/"
+            cd "$RUNNER_TEMP/key"
+            npm init -y > /dev/null
+            npm install --silent --no-audit --no-fund node-forge@1
+            node --input-type=module -e "import {createKey} from './android-key.mjs'; import {writeFileSync} from 'node:fs'; const {file, password} = createKey(); writeFileSync('$key', file); writeFileSync('password.txt', password);"
+            password=$(cat password.txt)
+            echo "::warning::Ключа подписи в секретах нет — APK подписан одноразовым ключом, только для проверки."
+          fi
+          echo "::add-mask::$password"
+          echo "HYPERBOREA_KEYSTORE=$key" >> "$GITHUB_ENV"
+          echo "HYPERBOREA_KEYSTORE_PASSWORD=$password" >> "$GITHUB_ENV"
+
+      - name: Сборка APK
+        working-directory: android
+        run: ./gradlew --no-daemon --stacktrace assembleRelease -PsiteDir="$SITE" -PappVersion="$VERSION"
+
+      - name: Проверка подписи
+        run: |
+          apk=android/app/build/outputs/apk/release/app-release.apk
+          apksigner="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$apksigner" verify --verbose --print-certs "$apk" | grep -E '^Verified using|Signer #1 certificate (DN|SHA-256)'
+          mkdir -p dist
+          cp "$apk" "dist/HYPERBOREA-$VERSION.apk"
+          printf '{"version":"%s","url":"https://github.com/%s/releases/download/%s/HYPERBOREA-%s.apk"}\n' \
+            "$VERSION" "$GH_REPO" "$TAG" "$VERSION" > dist/latest-android.json
+          ls -la dist
+          cat dist/latest-android.json
+
+      - name: APK в выпуск на GitHub
+        if: env.IS_RELEASE == 'true'
+        run: gh release upload "$TAG" "dist/HYPERBOREA-$VERSION.apk" dist/latest-android.json --clobber
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HYPERBOREA-${{ env.VERSION }}-android
+          path: dist/
+
+      - name: Сборки для проверки на эмуляторе
+        if: env.IS_RELEASE != 'true'
+        working-directory: android
+        run: |
+          feed=http://10.0.2.2:8765/latest-android.json
+          mkdir -p ../test-apks
+          ./gradlew --no-daemon assembleDebug -PsiteDir="$SITE" -PappVersion="$VERSION" -PupdateFeed=$feed
+          cp app/build/outputs/apk/debug/app-debug.apk ../test-apks/app-debug.apk
+          ./gradlew --no-daemon assembleDebug -PsiteDir="$SITE" -PappVersion=99.0.0 -PupdateFeed=$feed
+          cp app/build/outputs/apk/debug/app-debug.apk ../test-apks/HYPERBOREA-99.0.0.apk
+
+      - uses: actions/upload-artifact@v4
+        if: env.IS_RELEASE != 'true'
+        with:
+          name: test-apks
+          path: test-apks/
+          retention-days: 3
+
+  emulator:
+    needs: build
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: test-apks
+          path: test-apks
+
+      - name: Ускорение эмулятора (KVM)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Проверка на эмуляторе Android 15
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          cores: 4
+          ram-size: 4096M
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
+          disable-animations: true
+          script: bash android/ci/smoke-test.sh test-apks screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots/

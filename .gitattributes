@@ -1,0 +1,2 @@
+# Files for the site are copied byte for byte and checked by hash: never convert their line endings.
+site-updates/** -text

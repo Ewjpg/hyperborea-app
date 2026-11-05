@@ -1,0 +1,90 @@
+{
+  "title": "Минами Син вместо Хейса Мюллера",
+  "base": "Сайт из выпуска приложения 1.1.3",
+  "music": {
+    "path": "assets/minami-run-up.mp3",
+    "title": "Run Up — Jun Murayama"
+  },
+  "files": [
+    {
+      "path": "README.txt",
+      "before": "c77b01e81178cca3021071bb20cb036d755d9be5c5b97e8541d995d0243a3fbd",
+      "after": "00c90c370ac0d5059b6902d442e0a70d5f471275ffc2d9bab15efdfe98b999df"
+    },
+    {
+      "path": "assets/minami-shin-color.webp",
+      "before": null,
+      "after": "a2cdb3ea171ef8ebff5842f11bea8a6d244f15c28c5a3fc0c4ea0f03c7499ae7"
+    },
+    {
+      "path": "assets/minami-shin-manga.webp",
+      "before": null,
+      "after": "22ca8c18ea5549f640398bbeca74ba2f89ee9996a0052958621fcd0dd1f87091"
+    },
+    {
+      "path": "assets/swarggy-cutout.webp",
+      "before": "4843933d91c64df373bc0c15a8d74ab5c0a59f60298c1b5b53457e31b54a5e44",
+      "after": null
+    },
+    {
+      "path": "assets/swarggy-entry-poster.webp",
+      "before": "b7f0d09570b089779e400f79fc5212d816e91442f45645aea68e01bbd81d0c06",
+      "after": null
+    },
+    {
+      "path": "assets/swarggy-rin-voice.SOURCE.md",
+      "before": "e622dafcef4732bdc1351df5e0b67a6bf5253779746a558b1817b23482e1a0f4",
+      "after": null
+    },
+    {
+      "path": "higanbana.mjs",
+      "before": null,
+      "after": "63f4fac028415c1ae4fef70914b30504d6b013da32cca1101a72d462eb146c79"
+    },
+    {
+      "path": "index.html",
+      "before": "6b5d6ae7dd97d68388cd7553f243316282454c03222612e8d09a05e2a5b5e592",
+      "after": "906b9e974e480451bf4dd72a92a121ec8745bcd10130bda9383dec5255a36ec9"
+    },
+    {
+      "path": "player-identity.css",
+      "before": "7a76794cca3712cd7e8df7bccb8e7641794c7bf29bdc11e3c17d00ebb3c46821",
+      "after": "e2ded13725dc998f0ac690c7456fe2d7262258584621ba8090b769523ec10a04"
+    },
+    {
+      "path": "players-space.css",
+      "before": "6bbb3006aef746d2773328a28b5575b5adc03980d1876c52dc96a1f47c10ee5c",
+      "after": "a67d7d686a61818e9ef1104e291074f3a501d10d3d7f660d1fe7eb931052050c"
+    },
+    {
+      "path": "sound-mixer.css",
+      "before": "b0d1a50468fd9be193699e497b45c741d2e5ba2a2e2923a34ca10b4eaf5da96f",
+      "after": "b89b2b18cc09913460341e4854cdf4424723d80cad68c53a119174d2451c33ac"
+    },
+    {
+      "path": "sound-mixer.js",
+      "before": "b3b708696e90d636555862e3cb0981b949f5c718f6261780766b3f4029b24f30",
+      "after": "4cb3458d708186f9f54241b2af91e39593ff21f6f718f3fb13ce43992ae9c72d"
+    },
+    {
+      "path": "sw.js",
+      "before": "0905877a4ee09dcc532bd04bc30c80a2d08a04ed7ee6db9331b7976ce92c39c3",
+      "after": "8b0514e490150811aa9bac3c6e2e5e942dec30bd0d5b80446e41b0dc9f5b0bb2"
+    },
+    {
+      "path": "swarggy-cinematic.js",
+      "before": "869651d0b532211b61597743b4ac70997b7c3deeefa2cd55e39f3ef6df76abf5",
+      "after": null
+    },
+    {
+      "path": "swarggy.css",
+      "before": "f5f36e0958b893eb27e51f9f4901e1766fa06dc1db84a5e5ddb15f2c8ba3d27d",
+      "after": "2cd25e0a4b20ba0b16a74bc29ea1634278140af8ebd3406440bb5537ed64c222"
+    },
+    {
+      "path": "swarggy.js",
+      "before": "21f9f52b22ecd238120ace024bdee5e2296104c8090fbddbb068bb4b14f2f694",
+      "after": "6ba219a2c4b2c99ded1cf39f8c8a5d1792a0f772395a9939d4ae34a6f03b5733"
+    }
+  ]
+}

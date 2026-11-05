@@ -2,7 +2,7 @@
 // Файлы сайта лежат внутри приложения (папка site), поэтому интернет и VPN для работы не нужны.
 // Только отправка карточек (/api/...) пересылается на сервер сайта.
 // Обновления приходят с GitHub (github.com/Ewjpg/hyperborea-app, раздел Releases).
-const {app, BrowserWindow, Menu, dialog, net, protocol, shell} = require('electron');
+const {app, BrowserWindow, Menu, dialog, ipcMain, net, protocol, shell} = require('electron');
 const {autoUpdater} = require('electron-updater');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -148,10 +148,11 @@ function createWindow() {
     icon: path.join(__dirname, 'assets/app-icon.png'),
     autoHideMenuBar: true,
     show: false,
-    webPreferences: {contextIsolation: true, sandbox: true},
+    webPreferences: {contextIsolation: true, sandbox: true, preload: path.join(__dirname, 'preload.js')},
   });
   if (state.maximized) win.maximize();
-  win.once('ready-to-show', () => win.show());
+  // Приложение открывается на весь экран, как монитор терминала. F11 — выйти или вернуться.
+  win.once('ready-to-show', () => { win.setFullScreen(true); win.show(); });
   win.on('close', () => saveWindowState(win));
 
   // Ссылки на другие сайты открываются в обычном браузере.
@@ -200,10 +201,19 @@ function setupUpdates() {
   // Без интернета проверка просто не удастся — приложение работает дальше как обычно.
   autoUpdater.on('error', () => {});
 
-  let asked = false;
+  // Сайт внутри приложения сам показывает обновление как событие терминала «SYSTEM UPDATE»:
+  // полоска загрузки, потом перезапуск с выключением ЭЛТ. Если сайт не отозвался — обычное окно, как раньше.
+  let listening = false, asked = false;
+  const send = info => { for (const w of BrowserWindow.getAllWindows()) w.webContents.send('hyperborea:update', info); };
+  ipcMain.on('hyperborea:update-listening', () => { listening = true; });
+  ipcMain.on('hyperborea:update-install', () => autoUpdater.quitAndInstall(true, true));
+  ipcMain.on('hyperborea:update-later', () => {});
+  autoUpdater.on('update-available', info => send({state: 'available', version: info.version}));
+  autoUpdater.on('download-progress', progress => send({state: 'progress', percent: Math.round(progress.percent || 0)}));
   autoUpdater.on('update-downloaded', async info => {
     if (asked) return;
     asked = true;
+    if (listening) { send({state: 'ready', version: info.version}); return; }
     const {response} = await dialog.showMessageBox(BrowserWindow.getAllWindows()[0], {
       type: 'info',
       title: 'HYPERBOREA',

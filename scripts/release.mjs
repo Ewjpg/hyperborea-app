@@ -39,7 +39,9 @@ if (existing && !existing.isDraft) {
 }
 if (!existing) execFileSync(gh, ['release', 'create', tag, '--repo', repo, '--draft', '--title', version, '--notes', '', '--target', 'main'], {stdio: 'inherit'});
 
-execSync('node scripts/copy-site.mjs', {stdio: 'inherit'});
+// Разделы, которых пока не должно быть у людей (package.json → "releaseWithout", например ["lore"]).
+const without = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).releaseWithout || [];
+execSync('node scripts/copy-site.mjs' + (without.length ? ' --without ' + without.join(',') : ''), {stdio: 'inherit'});
 execSync('npx electron-builder --win nsis --publish always', {stdio: 'inherit', env: {...process.env, GH_TOKEN: token}});
 
 // APK собирает GitHub (.github/workflows/android.yml): берёт сайт из только что выложенного установщика,

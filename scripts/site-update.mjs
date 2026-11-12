@@ -72,6 +72,11 @@ for (const name of updates) {
   const dir = path.join(updatesDir, name);
   const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
   if (manifest.music) music = manifest.music;
+  // "applied": true — обновление давно внесено, а файлы с тех пор менялись: сверять их уже не с чем.
+  if (manifest.applied) {
+    console.log(`✓ ${manifest.title} — уже внесено.`);
+    continue;
+  }
   const plan = [];
   const conflicts = [];
   for (const entry of manifest.files) {
@@ -93,7 +98,7 @@ for (const name of updates) {
   const unresolved = conflicts.filter(entry => !patchable.includes(entry));
   const patchOk = patchable.length ? gitApply(patch, patchable.map(entry => entry.path), true) : true;
   if (unresolved.length || !patchOk) {
-    console.error(`✗ ${manifest.title}: эти файлы на компьютере уже отличаются от версии 1.1.3, и правки к ним не подходят:`);
+    console.error(`✗ ${manifest.title}: эти файлы на компьютере уже отличаются от исходной версии (${manifest.base}), и правки к ним не подходят:`);
     for (const entry of unresolved.length ? unresolved : patchable) console.error(`   ${entry.path}`);
     if (!patchOk && !hasGit) console.error('   (чтобы внести только правки, нужен git — https://git-scm.com/download/win)');
     console.error('Ничего не изменено. Попросите внести это обновление вручную, приложив эти файлы.');
@@ -102,7 +107,7 @@ for (const name of updates) {
 
   console.log(`→ ${manifest.title}`);
   for (const entry of plan) console.log(`   ${{replace: 'заменить', create: 'добавить', delete: 'удалить'}[entry.action]}: ${entry.path}`);
-  for (const entry of patchable) console.log(`   внести правки (файл менялся после 1.1.3): ${entry.path}`);
+  for (const entry of patchable) console.log(`   внести правки (файл менялся на компьютере): ${entry.path}`);
   if (checkOnly) continue;
 
   for (const entry of [...plan, ...patchable]) {

@@ -1,0 +1,31 @@
+{
+  "title": "Лор Минами Сина: характеристика, оружие Scarlet Web и Qiqi в глоссарии",
+  "base": "Сайт HYPERBOREA 2.1 (опубликован 11.11.2026)",
+  "files": [
+    {
+      "path": "index.html",
+      "before": "ab5fc00bee34fea8dd399c4ea189e26c785665abb163ba833b21b5bf59f47221",
+      "after": "d30f83a9184e64130afbaea8a925e9991429a5e26a00b582c6a962ad3e8ece32"
+    },
+    {
+      "path": "lore-data.js",
+      "before": "b9ed2b978c58b751bd07c816ccccc1bbd16937600c5ca1a397e6cbc8a01ea05b",
+      "after": "a1c74f88adb1ef3c5675848d8fb8d8b7166efb0186202b634b8094c794582ff7"
+    },
+    {
+      "path": "sw.js",
+      "before": "561c2e0777bfb0ff92071d154a23530dc626eff7765ff95f7486fca61abdc394",
+      "after": "81e0ed95eb58c63f1e12c4e8c54410d05e4e0937753547ee3958e2d3c7a59763"
+    },
+    {
+      "path": "swarggy.css",
+      "before": "d7984d05d49a923c6432304d1302bc627d4b53686d67efcb4b15a3e2e367c65a",
+      "after": "fb847abbae372cb3bb265cd3012872445d53816fa7fc65bfae3fccc901e7fdc2"
+    },
+    {
+      "path": "swarggy.js",
+      "before": "57f50f4e951b75f2de7b51bf84790af56ed1c9682bf4c5a2c71eb5f67c5bf959",
+      "after": "f5ba76d4b02ea62c16b75963ac73a8a1ceefc6a3d9899448286c012ccb69f0d3"
+    }
+  ]
+}

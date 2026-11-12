@@ -1,0 +1,170 @@
+diff --git a/index.html b/index.html
+index f283890..0535349 100644
+--- a/index.html
++++ b/index.html
+@@ -176,7 +176,7 @@ h1{font-size:clamp(12px,3.6vw,23px);letter-spacing:clamp(1px,.8vw,3px);padding-l
+ <link rel="stylesheet" href="./kle-experience.css?v=58">
+ <link rel="stylesheet" href="./roster-popout.css">
+ <link rel="stylesheet" href="./frog.css?v=34">
+-<link rel="stylesheet" href="./swarggy.css?v=65">
++<link rel="stylesheet" href="./swarggy.css?v=66">
+ <link rel="stylesheet" href="./new-players.css?v=52">
+ <link rel="stylesheet" href="./player-identity.css?v=53">
+ <link rel="stylesheet" href="./players-space.css?v=49">
+@@ -360,10 +360,44 @@ h1{font-size:clamp(12px,3.6vw,23px);letter-spacing:clamp(1px,.8vw,3px);padding-l
+    <section class="player-overall overall-swarggy" id="swarggyOverall" role="status" aria-live="polite" aria-atomic="true" aria-label="Overall Минами Син" data-rank="unrated"><span class="overall-sigil" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 30C27 21 20 17 11 18M32 30C37 21 44 17 53 18M32 30C24 27 15 29 9 36M32 30C40 27 49 29 55 36M32 30C30 20 30 12 33 5M32 30C29 37 30 47 32 62"/><path d="M32 30C22 33 18 41 19 49M32 30C42 33 46 41 45 49" stroke-opacity=".5"/><circle cx="32" cy="30" r="3.5" fill="currentColor"/><circle cx="11" cy="18" r="1.6" fill="currentColor"/><circle cx="53" cy="18" r="1.6" fill="currentColor"/><circle cx="9" cy="36" r="1.6" fill="currentColor"/><circle cx="55" cy="36" r="1.6" fill="currentColor"/><circle cx="33" cy="5" r="1.6" fill="currentColor"/></svg></span><div class="overall-heading"><span>Overall</span><output class="overall-score" id="swarggyOverallScore">—</output><small>/ 99</small><span class="overall-state" id="swarggyOverallState">Заполнено 0 / 7</span></div><output class="overall-rank" id="swarggyOverallRank" aria-label="Ранг не рассчитан">—</output><div class="overall-meter" aria-hidden="true"><span></span></div></section><details class="overall-scale"><summary>ШКАЛА РАНГОВ</summary><p>Overall — среднее семи характеристик, округлённое до целого. Для расчёта заполни все 7 значений.</p><div class="overall-scale-list"><span><b>S</b> 90–99</span><span><b>A</b> 80–89</span><span><b>B</b> 70–79</span><span><b>C</b> 60–69</span><span><b>D</b> 50–59</span><span><b>E</b> 30–49</span><span><b>F</b> 0–29</span></div></details>
+    <div class="swarggy-ratings profile-ratings"><label>PAC<input id="swarggyStatPAC" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="PAC Swarggy/Ew от 0 до 99"></label><label>SHO<input id="swarggyStatSHO" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="SHO Swarggy/Ew от 0 до 99"></label><label>PAS<input id="swarggyStatPAS" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="PAS Swarggy/Ew от 0 до 99"></label><label>DRI<input id="swarggyStatDRI" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="DRI Swarggy/Ew от 0 до 99"></label><label>DEF<input id="swarggyStatDEF" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="DEF Swarggy/Ew от 0 до 99"></label><label>PHY<input id="swarggyStatPHY" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="PHY Swarggy/Ew от 0 до 99"></label><label class="offense-label" title="Offense — атака">OFN<input id="swarggyStatOFN" type="number" min="0" max="99" step="1" inputmode="numeric" placeholder="—" aria-label="OFN Swarggy/Ew от 0 до 99"></label></div>
+   </div>
+-  <div class="swarggy-cell swarggy-editor" id="swarggyDescriptionCell" tabindex="-1"><div class="swarggy-cell-heading"><label for="swarggyDescription"><span>02</span>ХАРАКТЕРИСТИКА</label></div><textarea id="swarggyDescription" maxlength="12000" placeholder="Напиши характеристику Минами Сина…" aria-describedby="swarggySaveState"></textarea><div class="swarggy-editor-footer"><span id="swarggyDescriptionCount">0 / 12000</span></div></div>
++  <div class="swarggy-cell swarggy-editor" id="swarggyDescriptionCell" tabindex="-1"><div class="swarggy-cell-heading"><label for="swarggyDescription"><span>02</span>ХАРАКТЕРИСТИКА</label></div><textarea id="swarggyDescription" readonly aria-readonly="true" aria-describedby="swarggySaveState">Минами Син — один из самых талантливых игроков проекта. Он одинаково силён в атаке, в защите и в распасовке и может сыграть на любой позиции. Но в глубине души Син не верит в себя как в нападающего. Поэтому на поле он по привычке берёт на себя распасовку, а в опасный момент резко уходит в защиту.
++
++Детство Минами прошло спокойно: он был немного избалованным, но в основном тихим ребёнком. Всё изменил один матч. Син увидел игру одного из основателей Qiqi, и в нём что-то загорелось. В семь лет он начал играть в футбол, сразу на всех позициях. Его школьный клуб выигрывал все турниры подряд, а школа называла Минами своим новым талантом.
++
++Когда открылся Azure Latch, Минами получил приглашение от самого создателя Qiqi, одного из мировых клубов, вошедших в проект. Он согласился не раздумывая и улетел в Германию, в сердце клуба. Там Минами тоже выделялся… пока в клуб не пришёл Клаус Штурм.
++
++Клаус первым разглядел в Минами нападающего и первым заметил, что тот боится. Помогать он не стал. Он добил этот талант.
++
++Сейчас оба по-прежнему числятся в Qiqi. По условиям контракта их временно отдали в HyperBorea, чтобы закрыть дыру в составе нового клуба.
++
++ДОСЬЕ
++Дата рождения: 11.11.2007 · Скорпион
++Возраст: 19 лет
++Место рождения: Токио, Япония
++Рост: 187 см · размер ноги: 45
++Ведущая нога: правая
++Острота зрения: 1.2
++Группа крови: AB (IV) Rh−
++В футболе: с 7 лет
++Клуб: Qiqi (Германия), в аренде в HyperBorea
++Сильная сторона: игра на любой позиции
++Слабая сторона: низкая самооценка
++Цвет: пурпурно-малиновый
++Любимая еда: спагетти
++Любимая песня: Ghosts — Yung Lean, Bladee
++Любимое животное: собаки, особенно таксы
++Слабость: руки
++Шоколадок на 14 февраля: 9
++Сон: 5 часов
++Счастлив, когда: можно вкусно поесть и как следует отдохнуть
++Грустит, когда: проигрывает</textarea><div class="swarggy-editor-footer"><span id="swarggyDescriptionCount">ЗАКРЕПЛЕНО</span></div></div>
+  </section>
+- <section class="swarggy-cell swarggy-weapon-cell" id="swarggyWeaponCell" tabindex="-1" aria-labelledby="swarggyWeaponHeading"><div class="swarggy-weapon-heading"><span aria-hidden="true" lang="ja">花</span><h3 id="swarggyWeaponHeading"><label for="swarggyWeapon">ОРУЖИЕ</label></h3></div><div class="swarggy-editor"><textarea id="swarggyWeapon" maxlength="6000" placeholder="Название и описание оружия…" aria-describedby="swarggySaveState"></textarea><div class="swarggy-editor-footer"><span id="swarggyWeaponCount">0 / 6000</span></div></div></section>
+- <p class="swarggy-save-state" id="swarggySaveState" role="status" aria-live="polite">Черновик сохраняется на этом устройстве.</p>
++ <section class="swarggy-cell swarggy-weapon-cell" id="swarggyWeaponCell" tabindex="-1" aria-labelledby="swarggyWeaponHeading"><div class="swarggy-weapon-heading"><span aria-hidden="true" lang="ja">花</span><h3 id="swarggyWeaponHeading"><label for="swarggyWeapon">ОРУЖИЕ / SCARLET WEB</label></h3></div><div class="swarggy-editor"><textarea id="swarggyWeapon" readonly aria-readonly="true" aria-describedby="swarggySaveState">Scarlet Web
++
++Главное оружие Минами. Поле для него — паутина, и он сразу чувствует, где дрогнула нить: опоздал защитник, некому открыться под пас, в центре освободилась зона. Минами оказывается там раньше, чем соперник успеет этим воспользоваться, и закрывает дыру где угодно — в атаке, в распасовке или в защите. С ним команда играет так, будто на поле на одного игрока больше.
++
++Есть только одна дыра, которую Минами не закрывает никогда: место нападающего перед чужими воротами. Даже когда для удара открыт он сам, Минами отдаёт пас.</textarea><div class="swarggy-editor-footer"><span id="swarggyWeaponCount">ЗАКРЕПЛЕНО</span></div></div></section>
++ <p class="swarggy-save-state" id="swarggySaveState" role="status" aria-live="polite">Характеристика и оружие закреплены. Позиция и параметры сохраняются на этом устройстве.</p>
+  <section class="swarggy-cell minami-garden-cell" id="swarggyGardenCell" tabindex="-1" aria-labelledby="swarggyGardenHeading"><div class="minami-garden-side"><span class="minami-garden-kanji" aria-hidden="true" lang="ja">咲</span><h3 id="swarggyGardenHeading"><span>04</span>ХИГАНБАНА</h3><ul class="minami-garden-hints" id="swarggyGardenHints"><li><b>ПОТЯНИ</b>повернуть цветок</li><li><b>ЗАЖМИ</b>бутон сомкнётся</li><li><b>ОТПУСТИ</b>и он расцветёт</li><li><b>НАЖМИ НА ЦВЕТОК</b>лепестки опадут</li></ul></div><div class="minami-garden-stage" id="swarggyGarden" tabindex="0" role="group" aria-label="Хиганбана. Удерживай пробел, чтобы сомкнуть бутон, отпусти — и он расцветёт. Стрелки поворачивают цветок." aria-describedby="swarggyGardenHints"><i class="minami-garden-wave" aria-hidden="true"></i><p class="minami-garden-status" id="swarggyGardenStatus" aria-hidden="true">ЗАЖМИ ЦВЕТОК</p></div></section>
+ </article>
+ <article class="new-player-dossier np-emiliano" id="emilianoDossier" aria-labelledby="emilianoTitle" hidden>
+@@ -827,7 +861,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+ <script src="./frog-audio.js?v=35"></script>
+ <script src="./frog-coin.js?v=35"></script>
+ <script type="module" src="./frog.js?v=36"></script>
+-<script type="module" src="./swarggy.js?v=65"></script>
++<script type="module" src="./swarggy.js?v=66"></script>
+ <script src="./emiliano-audio.js?v=55"></script>
+ <script type="module" src="./new-players.js?v=52"></script>
+ <script type="module" src="./profile-overview.js?v=50"></script>
+@@ -838,7 +872,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+ <script src="./terminal-intro.js?v=3"></script>
+ <script src="./system-update.js?v=1"></script>
+ <script src="./versus.js?v=2"></script>
+-<script src="./lore-data.js?v=5"></script>
++<script src="./lore-data.js?v=6"></script>
+ <script src="./lore-novel.js?v=5"></script>
+ <script src="./lore.js?v=2"></script>
+ <script src="./hyper-net-config.js?v=3"></script>
+diff --git a/lore-data.js b/lore-data.js
+index 036b289..c1f7dd7 100644
+--- a/lore-data.js
++++ b/lore-data.js
+@@ -141,7 +141,7 @@ window.HYPERBOREA_LORE = {
+     {term: 'Azure Latch', kind: 'Проект', text: 'Международный проект PIFA, выросший из Blue Lock. Молодые футболисты со всего мира сражаются в беспощадной битве за звание лучшего бомбардира.'},
+     {term: 'Blue Lock', kind: 'Проект', text: 'Японский проект, созданный, чтобы вырастить лучшего бомбардира страны. С него начался Azure Latch.'},
+     {term: 'HyperBorea', kind: 'Клуб', aliases: ['HYPERBOREA'], text: ''},
+-    {term: 'Qiqi', kind: 'Клуб', text: ''},
++    {term: 'Qiqi', kind: 'Клуб', text: 'Один из мировых клубов, существовавших задолго до Azure Latch и вошедших в проект. Базируется в Германии. Минами Син и Клаус Штурм — игроки Qiqi, сейчас по условиям контракта временно играют за HyperBorea.'},
+     {term: 'MraX', kind: 'Клуб', text: ''},
+     {term: 'Vivi', kind: 'Клуб', text: ''},
+     {term: 'Les Bastions', kind: 'Клуб', text: ''}
+diff --git a/sw.js b/sw.js
+index 1fa9587..2f8c9c7 100644
+--- a/sw.js
++++ b/sw.js
+@@ -1,6 +1,6 @@
+-const CACHE = 'hyperborea-2-1-ideas-2';
++const CACHE = 'hyperborea-2-1-minami-lore-1';
+ // Music is requested only when played, rather than downloading every track on arrival.
+-const CORE = ['./fira-font.css?v=1', './assets/fonts/fira-extra-condensed-italic-700.ttf', './assets/fonts/fira-extra-condensed-italic-800.ttf', './assets/fonts/fira-extra-condensed-italic-900.ttf', './assets/fonts/fira-extra-condensed-normal-700.ttf', './assets/fonts/fira-extra-condensed-normal-800.ttf', './assets/fonts/fira-extra-condensed-normal-900.ttf', './fear-card-world.css?v=3', './fear-card-world.mjs?v=1', './fear-card-model.mjs?v=1', './fear-card-kit.mjs?v=1', './fear-card-organic.mjs?v=1', './fear-card-spatial.mjs?v=1', './fear-card-uncanny.mjs?v=1', './', './index.html', './manifest.webmanifest', './fear.css', './fear-font.css', './fear.js?v=53', './fear-dance.js?v=2', './fear-dance.css?v=2', './fear-experience.js?v=3', './fear-experience.css?v=2', './fear-world.js?v=3', './fear-sound.js?v=3', './fear-darkness-model.mjs?v=1', './fear-stats.js?v=36', './weapon-data.mjs?v=28', './mobile.css', './mobile.js?v=37', './fear-submit.js?v=36', './fear-submit.css', './wahhiyyy.css?v=35', './roster-popout.css', './frog.css?v=34', './frog.js?v=36', './frog-audio.js?v=35', './frog-coin.js?v=35', './players-space.css?v=49', './players-globe.js?v=3', './players-globe.css?v=3', './assets/world-land.png?v=2', './assets/world-borders.json?v=1', './player-foil.js?v=1', './dossier-cover.js?v=2', './dossier-cover.css?v=2', './app-cursor.js?v=2', './app-cursor.css?v=1', './terminal-intro.js?v=3', './hyper-net-config.js?v=3', './hyper-guest.js?v=3', './hyper-net.js?v=5', './hyper-os.js?v=6', './hyper-os.css?v=2', './hyper-net.css?v=5', './assets/pc-hum.mp3?v=1', './terminal-intro.css?v=3', './system-update.js?v=1', './system-update.css?v=1', './versus.js?v=2', './lore.js?v=2', './lore-data.js?v=5', './lore.css?v=3', './lore-novel.js?v=5', './lore-novel.css?v=4', './assets/lore/uozu-shore.webp', './assets/lore/sfx/kids-tokyo.ogg?v=1', './assets/lore/sfx/ball-kick.ogg?v=1', './assets/lore/prologue-shore.webp', './assets/lore/prologue-eh.webp', './assets/lore/prologue-what.webp', './assets/lore/clerk-calm.webp?v=1', './assets/lore/clerk-laugh.webp?v=1', './assets/lore/clerk-open.webp?v=1', './assets/lore/clerk-crossed.webp?v=1', './versus.css?v=1', './sim-match.js?v=1', './sim-match.css?v=1', './player-foil.css?v=1', './assets/frog-cutout.webp', './boot-events.css', './sound-mixer.js?v=10', './sound-mixer.css?v=3', './azure-latch.css?v=1','./tactics.css?v=27', './tactics.js?v=47', './simulation.css?v=32', './simulation.js?v=48', './sim-renderer.js?v=32', './reaction-renderer.js?v=32', './chemistry-rules.js?v=29', './pass-model.js?v=31', './vendor/three.module.min.js', './vendor/three.core.min.js', './boot-events.js?v=27', './assets/boot-crash-icon.png', './wahhiyyy.js?v=58', './kle-experience.css?v=58', './kle-experience.js?v=58', './kle-rubik.js?v=58', './kle-cube-model.mjs?v=57', './wah-puzzle-rain.js?v=35', './wah-audio.js?v=38', './wah-submit.js?v=36', './rating-model.mjs?v=36', './player-ratings.mjs?v=36', './player-ratings.css?v=36', './assets/wahhiyyy-kit-v2.webp', './assets/fear-cutout.png', './assets/bluelock-mark.svg', './icons/icon-192.png', './icons/icon-512.png', './higanbana.mjs?v=4', './higanbana-3d.mjs?v=1', './minami-opening.mjs?v=3', './minami-garden.mjs?v=2', './minami-lycoris.mjs?v=2', './swarggy.js?v=65', './swarggy.css?v=65', './player-identity.css?v=53', './assets/club-qiqi.png?v=1', './profile-overview.js?v=50', './new-players.css?v=52', './new-players.js?v=52', './emiliano-audio.js?v=55', './new-players-cinematic.js?v=52', './assets/emiliano-cutout.png', './assets/yoru-cutout.png', './assets/minami-shin-manga.webp?v=2', './assets/minami-shin-color.webp'];
++const CORE = ['./fira-font.css?v=1', './assets/fonts/fira-extra-condensed-italic-700.ttf', './assets/fonts/fira-extra-condensed-italic-800.ttf', './assets/fonts/fira-extra-condensed-italic-900.ttf', './assets/fonts/fira-extra-condensed-normal-700.ttf', './assets/fonts/fira-extra-condensed-normal-800.ttf', './assets/fonts/fira-extra-condensed-normal-900.ttf', './fear-card-world.css?v=3', './fear-card-world.mjs?v=1', './fear-card-model.mjs?v=1', './fear-card-kit.mjs?v=1', './fear-card-organic.mjs?v=1', './fear-card-spatial.mjs?v=1', './fear-card-uncanny.mjs?v=1', './', './index.html', './manifest.webmanifest', './fear.css', './fear-font.css', './fear.js?v=53', './fear-dance.js?v=2', './fear-dance.css?v=2', './fear-experience.js?v=3', './fear-experience.css?v=2', './fear-world.js?v=3', './fear-sound.js?v=3', './fear-darkness-model.mjs?v=1', './fear-stats.js?v=36', './weapon-data.mjs?v=28', './mobile.css', './mobile.js?v=37', './fear-submit.js?v=36', './fear-submit.css', './wahhiyyy.css?v=35', './roster-popout.css', './frog.css?v=34', './frog.js?v=36', './frog-audio.js?v=35', './frog-coin.js?v=35', './players-space.css?v=49', './players-globe.js?v=3', './players-globe.css?v=3', './assets/world-land.png?v=2', './assets/world-borders.json?v=1', './player-foil.js?v=1', './dossier-cover.js?v=2', './dossier-cover.css?v=2', './app-cursor.js?v=2', './app-cursor.css?v=1', './terminal-intro.js?v=3', './hyper-net-config.js?v=3', './hyper-guest.js?v=3', './hyper-net.js?v=5', './hyper-os.js?v=6', './hyper-os.css?v=2', './hyper-net.css?v=5', './assets/pc-hum.mp3?v=1', './terminal-intro.css?v=3', './system-update.js?v=1', './system-update.css?v=1', './versus.js?v=2', './lore.js?v=2', './lore-data.js?v=6', './lore.css?v=3', './lore-novel.js?v=5', './lore-novel.css?v=4', './assets/lore/uozu-shore.webp', './assets/lore/sfx/kids-tokyo.ogg?v=1', './assets/lore/sfx/ball-kick.ogg?v=1', './assets/lore/prologue-shore.webp', './assets/lore/prologue-eh.webp', './assets/lore/prologue-what.webp', './assets/lore/clerk-calm.webp?v=1', './assets/lore/clerk-laugh.webp?v=1', './assets/lore/clerk-open.webp?v=1', './assets/lore/clerk-crossed.webp?v=1', './versus.css?v=1', './sim-match.js?v=1', './sim-match.css?v=1', './player-foil.css?v=1', './assets/frog-cutout.webp', './boot-events.css', './sound-mixer.js?v=10', './sound-mixer.css?v=3', './azure-latch.css?v=1','./tactics.css?v=27', './tactics.js?v=47', './simulation.css?v=32', './simulation.js?v=48', './sim-renderer.js?v=32', './reaction-renderer.js?v=32', './chemistry-rules.js?v=29', './pass-model.js?v=31', './vendor/three.module.min.js', './vendor/three.core.min.js', './boot-events.js?v=27', './assets/boot-crash-icon.png', './wahhiyyy.js?v=58', './kle-experience.css?v=58', './kle-experience.js?v=58', './kle-rubik.js?v=58', './kle-cube-model.mjs?v=57', './wah-puzzle-rain.js?v=35', './wah-audio.js?v=38', './wah-submit.js?v=36', './rating-model.mjs?v=36', './player-ratings.mjs?v=36', './player-ratings.css?v=36', './assets/wahhiyyy-kit-v2.webp', './assets/fear-cutout.png', './assets/bluelock-mark.svg', './icons/icon-192.png', './icons/icon-512.png', './higanbana.mjs?v=4', './higanbana-3d.mjs?v=1', './minami-opening.mjs?v=3', './minami-garden.mjs?v=2', './minami-lycoris.mjs?v=2', './swarggy.js?v=66', './swarggy.css?v=66', './player-identity.css?v=53', './assets/club-qiqi.png?v=1', './profile-overview.js?v=50', './new-players.css?v=52', './new-players.js?v=52', './emiliano-audio.js?v=55', './new-players-cinematic.js?v=52', './assets/emiliano-cutout.png', './assets/yoru-cutout.png', './assets/minami-shin-manga.webp?v=2', './assets/minami-shin-color.webp'];
+ self.addEventListener('install', event => {
+   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
+ });
+diff --git a/swarggy.css b/swarggy.css
+index 362e74b..fab135f 100644
+--- a/swarggy.css
++++ b/swarggy.css
+@@ -111,6 +111,10 @@
+ .swarggy-editor{display:flex;flex-direction:column}
+ .swarggy-editor textarea{flex:1;display:block;width:100%;min-height:340px;resize:vertical;border:1px solid #7a243255;background:#0e0306ab;color:#f1d0d4;padding:18px;font:16px/1.9 Arial,sans-serif;border-radius:0}
+ .swarggy-editor textarea::placeholder{color:#93525c}
++.swarggy-editor textarea[readonly]{flex:none;min-height:0;resize:none;overflow:hidden;white-space:pre-wrap}
++/* The canon description is much taller than the ratings: keep the ratings at their own height and, on wide screens, beside the text while it is read. */
++#swarggyStatsCell{align-self:start}
++@media(min-width:951px) and (min-height:720px){#swarggyStatsCell{position:sticky;top:116px}}
+ .swarggy-editor-footer{display:flex;justify-content:flex-end;gap:14px;margin-top:14px;color:#9b5862;font:10px/1.8 Arial,sans-serif}
+ .swarggy-weapon-cell{display:grid;grid-template-columns:.65fr 2fr;gap:35px;margin-top:24px}
+ .swarggy-weapon-heading{align-self:center}
+diff --git a/swarggy.js b/swarggy.js
+index f394b1e..10e4a21 100644
+--- a/swarggy.js
++++ b/swarggy.js
+@@ -628,31 +628,38 @@ import {createProfileRadar} from './player-ratings.mjs?v=36';
+   // Keep that callback alive so central navigation can release its running state.
+   new MutationObserver(()=>{if((opened||busy)&&phase!=='iris'&&!database.classList.contains('active'))reset();}).observe(database,{attributes:true,attributeFilter:['class']});
+ 
+-  // ── Profile: ratings, position, description and weapon (saved on this device) ──
++  // ── Profile: ratings and position are saved on this device; the description and weapon are canon and read-only ──
+   const inputs=STAT_AXES.map(axis=>$('swarggyStat'+axis));
+   const position=$('swarggyPosition'),description=$('swarggyDescription'),weapon=$('swarggyWeapon');
+   const profileKey='hyperborea_swarggy_profile_v1',updateRadar=createProfileRadar('swarggy');
++  // Older drafts may still hold a description/weapon; they stay in storage untouched but no longer replace the canon text.
++  let stored={};
+   function draw(){
+     const ratings=inputs.map(input=>parseRating(input.value));updateRadar(ratings);
+-    $('swarggyDescriptionCount').textContent=description.value.length+' / 12000';$('swarggyWeaponCount').textContent=weapon.value.length+' / 6000';
+     return ratings;
+   }
+   function save(){
+-    const profile={ratings:draw(),position:position.value,description:description.value,weapon:weapon.value};
+-    try{localStorage.setItem(profileKey,JSON.stringify(profile));$('swarggySaveState').textContent='Сохранено на этом устройстве';}catch{$('swarggySaveState').textContent='Изменения доступны до закрытия страницы';}
++    stored={...stored,ratings:draw(),position:position.value};
++    try{localStorage.setItem(profileKey,JSON.stringify(stored));$('swarggySaveState').textContent='Сохранено на этом устройстве';}catch{$('swarggySaveState').textContent='Изменения доступны до закрытия страницы';}
+   }
+   try{
+     const saved=JSON.parse(localStorage.getItem(profileKey)||'null');
+     if(saved&&typeof saved==='object'&&!Array.isArray(saved)){
++      stored=saved;
+       if(Array.isArray(saved.ratings))inputs.forEach((input,i)=>{input.value=parseRating(saved.ratings[i])??'';});
+       if(typeof saved.position==='string')position.value=saved.position.slice(0,40);
+-      if(typeof saved.description==='string')description.value=saved.description.slice(0,12000);
+-      if(typeof saved.weapon==='string')weapon.value=saved.weapon.slice(0,6000);
+     }
+   }catch{}
+   inputs.forEach(input=>input.addEventListener('input',()=>{input.value=parseRating(input.value)??'';save();}));
+-  for(const input of [position,description,weapon])input.addEventListener('input',save);
++  position.addEventListener('input',save);
+   draw();
++  // The canon texts are read in full, so each read-only box grows to its text instead of scrolling.
++  // Refit only when the width changes: that covers the dossier opening and the window resizing.
++  for(const box of [description,weapon]){
++    let width=0;
++    const fit=()=>{box.style.height='auto';box.style.height=box.scrollHeight+2+'px';};
++    new ResizeObserver(([entry])=>{const next=Math.round(entry.contentRect.width);if(next&&next!==width){width=next;fit();}}).observe(box);
++  }
+ 
+   // Loose petals that drift down; positions are fixed per page so they never jump.
+   function scatterPetals(box,count,seed){

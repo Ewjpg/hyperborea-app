@@ -1,6 +1,7 @@
 {
   "title": "Минами Син вместо Хейса Мюллера",
   "base": "Сайт из выпуска приложения 1.1.3",
+  "applied": true,
   "music": {
     "path": "assets/minami-run-up.mp3",
     "title": "Run Up — Jun Murayama"
